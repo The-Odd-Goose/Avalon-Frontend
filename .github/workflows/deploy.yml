@@ -22,9 +22,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+      
         with:
           node-version: 14
-        - run: cd avalon
-        - run: npm ci # means install
-        - run: npm test
-        - run: npm run build
+
+      - run: cd avalon
+      - run: npm ci # means install
+      - run: npm test
+      - run: npm run build
