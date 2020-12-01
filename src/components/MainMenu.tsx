@@ -29,7 +29,7 @@ function JoinGame() {
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
         // here we'll add the user id to the specific game room
         console.log(`This is the given game code: ${roomCode}`)
-        e.preventDefault()
+        e.preventDefault();
     }
 
     return (
