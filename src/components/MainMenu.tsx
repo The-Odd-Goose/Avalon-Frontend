@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'react-bootstrap';
 import Form from "react-bootstrap/Form";
 
@@ -24,11 +24,13 @@ function SignIn() {
 
 function JoinGame() {
 
+    const [roomCode, setRoomCode] = useState("")
+
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
         // here we'll add the user id to the specific game room
-
+        console.log(`This is the given game code: ${roomCode}`)
+        e.preventDefault()
     }
-
 
     return (
         <div>
@@ -36,7 +38,7 @@ function JoinGame() {
 
                 <Form.Group>
                     <Form.Label>Game Room Code:</Form.Label>
-                    <Form.Control type="text" />
+                    <Form.Control type="text" onChange={(e) => setRoomCode(e.target.value)}/>
                 </Form.Group>
 
                 <Button variant="primary" type="submit">Join</Button>
