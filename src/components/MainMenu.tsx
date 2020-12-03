@@ -30,12 +30,12 @@ function SignOut() {
     )
 }
 
-const addToGameFetch = async (gameId: string, uid: string, photoURL: string | null) => {
+const addToGameFetch = async (username: string, gameId: string, uid: string, photoURL: string | null) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-        "username": "vic",
+        username,
         gameId,
         uid,
         photoURL
@@ -54,7 +54,9 @@ const addToGameFetch = async (gameId: string, uid: string, photoURL: string | nu
 
 function JoinGame() {
 
-    const [roomCode, setRoomCode] = useState("")
+    const [roomCode, setRoomCode] = useState("");
+    const [username, setUsername] = useState("");
+    const [inGame, setInGame] = useState(false);
 
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
         // here we'll add the user id to the specific game room
@@ -66,18 +68,36 @@ function JoinGame() {
             const { uid, photoURL } = auth.currentUser;
             console.log(`This is the user id ${uid} and the photoURL ${photoURL}`);
             // then here we'll send an http request
-            await addToGameFetch(roomCode, uid, photoURL)
+            await addToGameFetch(username, roomCode, uid, photoURL)
+
+            // now we want to redirect to a separate page
+            setInGame(true);
+
         }
 
     }
 
+    if (inGame) {
+        // TODO: make this a component, and save to router
+        return (
+            <>
+                <img src="https://storage.cloud.google.com/the-odd-goose/goose.jpg" alt="This is a goose" />
+            </>
+        );
+    }
+
     return (
         <div>
+
             <Form onSubmit={joinGameRoom}>
 
                 <Form.Group>
                     <Form.Label>Game Room Code:</Form.Label>
                     <Form.Control type="text" onChange={(e) => setRoomCode(e.target.value)} />
+
+                    <Form.Label>Nickname:</Form.Label>
+                    <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
+
                 </Form.Group>
 
                 <Button variant="primary" type="submit">Join</Button>
