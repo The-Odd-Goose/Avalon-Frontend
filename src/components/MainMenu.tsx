@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import firebase from "firebase/app"
 import { auth } from '../firebase-init';
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { Redirect } from 'react-router';
 
 interface Props {
 }
@@ -80,9 +81,7 @@ function JoinGame() {
     if (inGame) {
         // TODO: make this a component, and save to router
         return (
-            <>
-                <img src="https://storage.cloud.google.com/the-odd-goose/goose.jpg" alt="This is a goose" />
-            </>
+            <Redirect to={`/games/${roomCode}`}/>
         );
     }
 
