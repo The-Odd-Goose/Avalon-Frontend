@@ -7,6 +7,8 @@ import { auth } from '../firebase-init';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { Redirect } from 'react-router';
 
+import { createPostRequest } from './fetch'
+
 interface Props {
 }
 
@@ -32,25 +34,15 @@ function SignOut() {
 }
 
 const addToGameFetch = async (username: string, gameId: string, uid: string, photoURL: string | null) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify({
-        username,
-        gameId,
-        uid,
-        photoURL
-    });
+    const data = { username, gameId, uid, photoURL };
+    await createPostRequest(data, '/addToGame')
 
-    await fetch("http://localhost:8080/addToGame", {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    })
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+}
+
+const createGameFetch = async (username: string, uid: string, photoURL: string | null) => {
+    const data = { username, uid, photoURL }
+    return await createPostRequest(data, '/addToGame')
 }
 
 function JoinGame() {
@@ -59,6 +51,7 @@ function JoinGame() {
     const [username, setUsername] = useState("");
     const [inGame, setInGame] = useState(false);
 
+    // for joining a game
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
         // here we'll add the user id to the specific game room
         e.preventDefault();
@@ -73,6 +66,24 @@ function JoinGame() {
 
             // now we want to redirect to a separate page
             setInGame(true);
+        }
+
+    }
+
+    // for creating a game
+    const createGameRoom: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void = async (e) => {
+        e.preventDefault();
+
+        if (auth.currentUser != null) {
+            const { uid, photoURL } = auth.currentUser;
+            const newRoomCode = await createGameFetch(username, uid, photoURL)
+
+            if (typeof newRoomCode === 'string') {
+                setRoomCode(newRoomCode);
+                setInGame(true)
+            } else {
+                console.error("Error creating game")
+            }
 
         }
 
@@ -81,7 +92,7 @@ function JoinGame() {
     if (inGame) {
         // TODO: make this a component, and save to router
         return (
-            <Redirect to={`/games/${roomCode}`}/>
+            <Redirect to={`/games/${roomCode}`} />
         );
     }
 
@@ -97,11 +108,17 @@ function JoinGame() {
                     <Form.Label>Nickname:</Form.Label>
                     <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
 
+                    <Form.Label>Or create your own game:</Form.Label>
+                    <Button variant="secondary" onClick={createGameRoom}>Host</Button>
+
                 </Form.Group>
 
                 <Button variant="primary" type="submit">Join</Button>
 
             </Form>
+
+            {/* separate form to create a game */}
+
         </div>
     )
 
