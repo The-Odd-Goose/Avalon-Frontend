@@ -45,6 +45,10 @@ const createGameFetch = async (username: string, uid: string) => {
     return await createPostRequest(data, '/game')
 }
 
+const testFetch = async () => {
+    await createPostRequest({}, '/test')
+}
+
 function JoinGame() {
 
     const [roomCode, setRoomCode] = useState("");
@@ -117,6 +121,8 @@ function JoinGame() {
                 <Button variant="primary" type="submit">Join</Button>
 
             </Form>
+
+            <Button variant="primary" onClick={testFetch}>Test</Button>
 
 
         </div>

@@ -5,7 +5,7 @@ const createFetchRequest = async (data: Object, method: string, endpoint:string)
 
         var raw = JSON.stringify(data);
 
-        const text = await fetch(`http://localhost:8080${endpoint}`, {
+        const text = await fetch(`https://backend-26kgkl3loq-uc.a.run.app${endpoint}`, {
             method: method,
             headers: myHeaders,
             body: raw,
