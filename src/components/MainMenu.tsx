@@ -42,7 +42,7 @@ const addToGameFetch = async (username: string, gameId: string, uid: string) => 
 
 const createGameFetch = async (username: string, uid: string) => {
     const data = { username, uid }
-    return await createPostRequest(data, '/game')
+    return await createPostRequest(data, '/error')
 }
 
 function JoinGame() {
@@ -77,13 +77,15 @@ function JoinGame() {
 
         if (auth.currentUser != null) {
             const { uid } = auth.currentUser;
-            const newRoomCode = await createGameFetch(username, uid)
+            const gameCode = await createGameFetch(username, uid)
 
-            if (typeof newRoomCode === 'string') {
-                setRoomCode(newRoomCode);
-                setInGame(true)
+            if (typeof gameCode !== 'string') {
+                console.log(gameCode)
+                // setRoomCode();
+                // setInGame(true)
             } else {
-                console.error("Error creating game")
+                // TODO: more error handling
+                console.error(gameCode)
             }
 
         }
