@@ -33,16 +33,16 @@ function SignOut() {
     )
 }
 
-const addToGameFetch = async (username: string, gameId: string, uid: string, photoURL: string | null) => {
+const addToGameFetch = async (username: string, gameId: string, uid: string) => {
 
-    const data = { username, gameId, uid, photoURL };
-    await createPostRequest(data, '/addToGame')
+    const data = { username, gameId, uid };
+    await createPostRequest(data, '/gameMember')
 
 }
 
-const createGameFetch = async (username: string, uid: string, photoURL: string | null) => {
-    const data = { username, uid, photoURL }
-    return await createPostRequest(data, '/addToGame')
+const createGameFetch = async (username: string, uid: string) => {
+    const data = { username, uid }
+    return await createPostRequest(data, '/game')
 }
 
 function JoinGame() {
@@ -59,10 +59,9 @@ function JoinGame() {
 
         // as long as the current user exists, then print out the uid and photoURL
         if (auth.currentUser != null) {
-            const { uid, photoURL } = auth.currentUser;
-            console.log(`This is the user id ${uid} and the photoURL ${photoURL}`);
+            const { uid } = auth.currentUser;
             // then here we'll send an http request
-            await addToGameFetch(username, roomCode, uid, photoURL)
+            await addToGameFetch(username, roomCode, uid)
 
             // now we want to redirect to a separate page
             setInGame(true);
@@ -75,8 +74,8 @@ function JoinGame() {
         e.preventDefault();
 
         if (auth.currentUser != null) {
-            const { uid, photoURL } = auth.currentUser;
-            const newRoomCode = await createGameFetch(username, uid, photoURL)
+            const { uid } = auth.currentUser;
+            const newRoomCode = await createGameFetch(username, uid)
 
             if (typeof newRoomCode === 'string') {
                 setRoomCode(newRoomCode);
@@ -91,9 +90,10 @@ function JoinGame() {
 
     if (inGame) {
         // TODO: make this a component, and save to router
-        return (
-            <Redirect to={`/games/${roomCode}`} />
-        );
+        console.log(roomCode)
+        // return (
+            // <Redirect to={`/games/${roomCode}`} />
+        // );
     }
 
     return (
@@ -108,6 +108,7 @@ function JoinGame() {
                     <Form.Label>Nickname:</Form.Label>
                     <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
 
+                    {/* For hosting your own game */}
                     <Form.Label>Or create your own game:</Form.Label>
                     <Button variant="secondary" onClick={createGameRoom}>Host</Button>
 
@@ -117,7 +118,6 @@ function JoinGame() {
 
             </Form>
 
-            {/* separate form to create a game */}
 
         </div>
     )
@@ -131,7 +131,8 @@ export const MainMenu = (props: Props) => {
     return (
         <>
             <SignOut />
-            {user ? <JoinGame /> : <SignIn />}
+            {user ? 
+                <div><JoinGame /></div> : <SignIn />}
         </>
     )
 }

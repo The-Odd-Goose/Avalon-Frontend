@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Redirect, useParams } from 'react-router';
 import { firestore } from '../../firebase-init';
-import { Chatbar } from "./Chatbar";
 import { Mission } from "./Mission";
 import { useDocumentData } from "react-firebase-hooks/firestore"
 
