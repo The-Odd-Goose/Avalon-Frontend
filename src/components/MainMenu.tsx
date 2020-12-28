@@ -45,11 +45,9 @@ const createGameFetch = async (username: string, uid: string) => {
     return await createPostRequest(data, '/game')
 }
 
-const testFetch = async () => {
-    await createPostRequest({}, '/test')
-}
-
 function JoinGame() {
+
+    // TODO: add in a loading after pressing join game and create game and disable buttons
 
     const [roomCode, setRoomCode] = useState("");
     const [username, setUsername] = useState("");
@@ -93,11 +91,9 @@ function JoinGame() {
     }
 
     if (inGame) {
-        // TODO: make this a component, and save to router
-        console.log(roomCode)
-        // return (
-            // <Redirect to={`/games/${roomCode}`} />
-        // );
+        return (
+            <Redirect to={`/games/${roomCode}`} />
+        );
     }
 
     return (
@@ -121,8 +117,6 @@ function JoinGame() {
                 <Button variant="primary" type="submit">Join</Button>
 
             </Form>
-
-            <Button variant="primary" onClick={testFetch}>Test</Button>
 
 
         </div>
