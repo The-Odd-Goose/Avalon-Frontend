@@ -23,19 +23,20 @@ export const GameRoom = (props: Props) => {
         return <Redirect to="/" />
     }
 
-    console.table(gameData)
+    const playersRef = gamesRef.collection("players")
 
     // TODO: improve the loading haha
 
     return (
-        loading ?
+        !loading ?
             <div>
                 {gameId}
-                <br />
-                <Players playersRef={gamesRef.collection('players')} />
-                {gameData && gameData.merlin}
+                <hr />
+                <Players playersRef={playersRef} />
+                <hr />
+                {JSON.stringify(gameData)}
             </div>
-            : <>"loading..."</>
+            : <>loading...</>
     )
 }
 

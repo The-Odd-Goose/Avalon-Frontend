@@ -14,13 +14,13 @@ const createFetchRequest = async (data: Object, method: string, endpoint:string)
         })
             .then(async response =>
                 {
-                    if (response.ok){
+                    if (response.ok) {
                         return await response.json()
-                    } else{
+                    } else {
                         return await response.text()
                     }
                 })
-            .catch((error) => console.log('error', error));
+            .catch(error => console.log('error', error));
 
         return json;
     }

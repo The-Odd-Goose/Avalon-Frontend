@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
 import Form from "react-bootstrap/Form";
 
 import firebase from "firebase/app"
@@ -36,13 +36,13 @@ function SignOut() {
 const addToGameFetch = async (username: string, gameId: string, uid: string) => {
 
     const data = { username, gameId, uid };
-    await createPostRequest(data, '/gameMember')
+    return await createPostRequest(data, '/gameMember')
 
 }
 
 const createGameFetch = async (username: string, uid: string) => {
     const data = { username, uid }
-    return await createPostRequest(data, '/error')
+    return await createPostRequest(data, '/game')
 }
 
 function JoinGame() {
@@ -52,21 +52,26 @@ function JoinGame() {
     const [roomCode, setRoomCode] = useState("");
     const [username, setUsername] = useState("");
     const [inGame, setInGame] = useState(false);
+    const [error, setError] = useState("");
 
     // for joining a game
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
         // here we'll add the user id to the specific game room
         e.preventDefault();
-        console.log(`This is the given game code: ${roomCode}`)
 
         // as long as the current user exists, then print out the uid and photoURL
         if (auth.currentUser != null) {
             const { uid } = auth.currentUser;
             // then here we'll send an http request
-            await addToGameFetch(username, roomCode, uid)
+            const response = await addToGameFetch(username, roomCode, uid)
 
-            // now we want to redirect to a separate page
-            setInGame(true);
+            if (typeof response === 'string') {
+                // then an error has occured
+                setError(response)
+            } else {
+                // now we want to redirect to a separate page
+                setInGame(true);
+            }
         }
 
     }
@@ -80,12 +85,10 @@ function JoinGame() {
             const gameCode = await createGameFetch(username, uid)
 
             if (typeof gameCode !== 'string') {
-                console.log(gameCode)
-                // setRoomCode();
-                // setInGame(true)
+                setRoomCode(gameCode);
+                setInGame(true)
             } else {
-                // TODO: more error handling
-                console.error(gameCode)
+                setError(gameCode)
             }
 
         }
@@ -100,6 +103,12 @@ function JoinGame() {
 
     return (
         <div>
+            {error && 
+                <Alert variant="danger">
+                    <Alert.Heading>An error has occured!</Alert.Heading>
+                    <p>{error}</p>
+                </Alert>
+            }
 
             <Form onSubmit={joinGameRoom}>
 
@@ -133,7 +142,7 @@ export const MainMenu = (props: Props) => {
     return (
         <>
             <SignOut />
-            {user ? 
+            {user ?
                 <div><JoinGame /></div> : <SignIn />}
         </>
     )

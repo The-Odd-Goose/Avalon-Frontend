@@ -1,6 +1,5 @@
 import React from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { firestore } from '../../firebase-init';
 
 // single player
 interface PropsPlayer {
@@ -12,7 +11,7 @@ interface PropsPlayer {
 
 const Player = (props: PropsPlayer) => {
 
-    const {player} = props;
+    const { player } = props;
 
     // TODO: determine the different uses of status, ie bad makes it red or smth
     // TODO: making this work
@@ -21,14 +20,14 @@ const Player = (props: PropsPlayer) => {
         const { photoURL, username } = player;
         return (
             <div>
-                <img src={photoURL} alt="https://storage.cloud.google.com/the-odd-goose/goose.jpg" />
+                <img src={photoURL} alt="Profile" />
                 {username}
             </div>
         )
     }
 
     return (
-        player && 
+        player &&
         mapPlayerToTsx(player)
     )
 }
@@ -39,15 +38,15 @@ interface PropsPlayers {
 }
 
 export const Players = (props: PropsPlayers) => {
-    const {playersRef} = props;
-    const query = playersRef.limit(8);
+    const { playersRef } = props;
 
-    const [players] = useCollectionData(query, {idField: "id"});
+    const [players, loading] = useCollectionData(playersRef, { idField: "id" });
 
     return (
-        <div>
+        !loading ? <div>
             {players &&
                 players.map((player, i) => <Player key={i} player={player} />)}
-        </div>
-    )    
+        </div> :
+            <>loading...</>
+    )
 }
