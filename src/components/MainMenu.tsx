@@ -70,13 +70,13 @@ function JoinGame() {
             if (typeof response === 'string') {
                 // then an error has occured
                 setError(response)
+                setLoading(false)
             } else {
                 // now we want to redirect to a separate page
                 setInGame(true);
             }
         }
 
-        setLoading(false)
 
     }
 
@@ -90,15 +90,14 @@ function JoinGame() {
             const gameCode = await createGameFetch(username, uid)
 
             if (typeof gameCode !== 'string') {
-                setRoomCode(gameCode);
+                setRoomCode(gameCode.gameId);
                 setInGame(true)
             } else {
                 setError(gameCode)
+                setLoading(false)
             }
 
         }
-
-        setLoading(false)
 
     }
 
