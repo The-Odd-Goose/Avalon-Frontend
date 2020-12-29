@@ -30,4 +30,8 @@ const createPostRequest = (data: Object, endpoint: string) => {
     return createFetchRequest(data, 'POST', endpoint)
 }
 
-export {createPostRequest};
+const createDeleteRequest = (data: Object, endpoint: string) => {
+    return createFetchRequest(data, 'DELETE', endpoint)
+}
+
+export {createPostRequest, createDeleteRequest};
