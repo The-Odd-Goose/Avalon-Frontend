@@ -5,8 +5,8 @@ const createFetchRequest = async (data: Object, method: string, endpoint:string)
 
         var raw = JSON.stringify(data);
 
-        // const backendURL = "https://backend-26kgkl3loq-uc.a.run.app"
-        const json = await fetch(`http://localhost:8080${endpoint}`, {
+        const backendURL = "https://backend-26kgkl3loq-uc.a.run.app"
+        const json = await fetch(`${backendURL}${endpoint}`, {
             method: method,
             headers: myHeaders,
             body: raw,
@@ -30,4 +30,8 @@ const createPostRequest = (data: Object, endpoint: string) => {
     return createFetchRequest(data, 'POST', endpoint)
 }
 
-export {createPostRequest};
+const createDeleteRequest = (data: Object, endpoint: string) => {
+    return createFetchRequest(data, 'DELETE', endpoint)
+}
+
+export {createPostRequest, createDeleteRequest};

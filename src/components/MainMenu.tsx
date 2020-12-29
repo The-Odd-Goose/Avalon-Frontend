@@ -53,9 +53,11 @@ function JoinGame() {
     const [username, setUsername] = useState("");
     const [inGame, setInGame] = useState(false);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false)
 
     // for joining a game
     const joinGameRoom: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
+        setLoading(true)
         // here we'll add the user id to the specific game room
         e.preventDefault();
 
@@ -74,10 +76,13 @@ function JoinGame() {
             }
         }
 
+        setLoading(false)
+
     }
 
     // for creating a game
     const createGameRoom: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void = async (e) => {
+        setLoading(true)
         e.preventDefault();
 
         if (auth.currentUser != null) {
@@ -93,6 +98,8 @@ function JoinGame() {
 
         }
 
+        setLoading(false)
+
     }
 
     if (inGame) {
@@ -102,6 +109,7 @@ function JoinGame() {
     }
 
     return (
+        loading ? <>loading...</> :
         <div>
             {error && 
                 <Alert variant="danger">
