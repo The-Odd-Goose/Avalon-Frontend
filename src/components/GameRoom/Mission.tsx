@@ -80,20 +80,19 @@ const ChooseMission = (props: ChooseProps) => {
             }
         }
 
-        const response = await createPostRequest({uid, gameId, mission}, "/proposeMission")
+        const response = await createPostRequest({uid, gameId, mission: proposeMission}, "/proposeMission")
 
         if(typeof response === 'string') {
             setError(response)
         }
-
-        console.log("Hello")
 
         setLoading(false)
     }
 
     return (
         <>
-            <Alert>{error}</Alert>
+            {loading && <>...loading</>}
+            {error && <Alert variant="danger">{error}</Alert>}
             {players?.map((player, i) => {
                 return mapPlayerToMissionChoice(player, i)
             })}
@@ -104,18 +103,18 @@ const ChooseMission = (props: ChooseProps) => {
     )
 }
 
-const getJsxArray = (num: Number, upperNum: number, jsxTrue: JSX.Element, jsxFalse: JSX.Element): Array<JSX.Element> => {
+const getJsxArray = (num: Number, upperNum: number, jsxTrue: (key: number) => JSX.Element, jsxFalse: (key: number) => JSX.Element): Array<JSX.Element> => {
     const jsxArray: Array<JSX.Element> = []
 
     for (let i = 0; i < upperNum; i++) {
         if (num < i + 1) {
-            jsxArray.push(jsxTrue)
+            jsxArray.push(jsxTrue(i))
         } else {
-            jsxArray.push(jsxFalse)
+            jsxArray.push(jsxFalse(i))
         }
     }
 
-    return jsxArray
+    return jsxArray;
 }
 
 export const Mission = (props: Props) => {
@@ -124,9 +123,9 @@ export const Mission = (props: Props) => {
 
     // turns the number of successes into an array of jsx elements
     // 3 - that number gets turned into a different type
-    const successJsx = getJsxArray(success, 3, <Spinner animation="border" variant="secondary" />, <Spinner animation="grow" variant="success" />)
-    const failJsx = getJsxArray(fail, 3, <Spinner animation="border" variant="secondary" />, <Spinner animation="grow" variant="danger" />)
-    const rejectionsJsx = getJsxArray(rejections, 5, <Spinner animation="border" variant="secondary" />, <Spinner animation="grow" variant="dark" />)
+    const successJsx = getJsxArray(success, 3, (key) => <Spinner key={key} animation="border" variant="secondary" />, (key) => <Spinner key={key} animation="grow" variant="success" />)
+    const failJsx = getJsxArray(fail, 3, (key) => <Spinner key={key} animation="border" variant="secondary" />, (key) => <Spinner key={key} animation="grow" variant="danger" />)
+    const rejectionsJsx = getJsxArray(rejections, 5, (key) => <Spinner key={key} animation="border" variant="secondary" />, (key) => <Spinner key={key} animation="grow" variant="dark" />)
 
     return (
         <div>
