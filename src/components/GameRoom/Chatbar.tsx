@@ -4,6 +4,7 @@ import { Button, InputGroup, FormControl } from 'react-bootstrap';
 import { firestore, firebase } from '../../firebase-init';
 
 interface Props {
+  style: { [key: string]: any } | undefined,
   messages: Array<any> | undefined,
   loading: Boolean,
   players: Array<any> | undefined,
@@ -12,7 +13,7 @@ interface Props {
 
 export const Chatbar = (props: Props) => {
 
-  const { messages, loading, players, user } = props;
+  const { style, messages, loading, players, user } = props;
 
   const [ playersById, setPlayersById ] = useState<any>(undefined);
   const [ formattedMessages, setFormattedMessages ] = useState<any>(undefined);
@@ -85,7 +86,7 @@ export const Chatbar = (props: Props) => {
   }
 
   return (
-    <div style={{ border: '4px solid #000000' }}>
+    <div style={{ ...style }}>
       <div style={{ marginBottom: '0.5em' }}>
         {formattedMessages}
       </div>
