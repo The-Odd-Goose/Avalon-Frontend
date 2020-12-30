@@ -119,13 +119,23 @@ export const GameRoom = (props: Props) => {
     return (
         !loading ?
             <div>
-                {gameId}
+                The Room Code is: {gameId}
+                <br />
+                Turn: {gameData.turn}
                 <hr />
                 <Players players={players} loading={playersLoading} user={userInfo} />
                 <hr />
-                {JSON.stringify(gameData)}
+                {gameData.turn === 0 ?
+                    <p>Game has not started yet!</p>
+                    : <Mission success={gameData.success} turn={gameData.turn} fail={gameData.fail} rejections={gameData.rejected}/>
+                }
+                <hr />
+                {gameData.turn === 60 &&
+                    // todo: what to show when the winner is decided!
+                    gameData.winner
+                }
+                <hr />
                 {owner && <Owner gameId={gameId} user={userInfo}/>}
-                {userInfo && JSON.stringify(userInfo)}
                 <Button variant="outline-info" href="/">Home</Button>
             </div>
             : <>loading...</>

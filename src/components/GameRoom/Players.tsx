@@ -1,4 +1,5 @@
 import React from 'react'
+import { Card, CardGroup } from 'react-bootstrap';
 
 // single player
 interface PropsPlayer {
@@ -19,11 +20,15 @@ const Player = (props: PropsPlayer) => {
     const mapPlayerToTsx = (player: any) => {
         const { photoURL, username } = player;
         return (
-            <div>
-                <img src={photoURL} alt="Profile" />
-                {username}
-                <p>{status}</p>
-            </div>
+            <Card>
+                <Card.Img variant="top" src={photoURL} alt="Profile" />
+                <Card.Body>
+                    <Card.Title>{username}</Card.Title>
+                    <Card.Text>
+                        {status}
+                    </Card.Text>
+                </Card.Body>
+            </Card>
         )
     }
 
@@ -45,43 +50,44 @@ export const Players = (props: PropsPlayers) => {
     console.log(user)
 
     return (
-        !loading ? <div>
-            {players &&
-                players.map((player, i) => {
-                    let status = ""
-                    if (player.uid === user.uid) {
-                        status += "YOU!"
-                        if(player.merlin){
-                            status = "You are the Goose Wizard!"
+        !loading ?
+            <CardGroup>
+                {players &&
+                    players.map((player, i) => {
+                        let status = ""
+                        if (player.uid === user.uid) {
+                            status += "YOU!"
+                            if (player.merlin) {
+                                status = "You are the Goose Wizard!"
+                            }
+                            else if (player.morgana) {
+                                status = "You are the Duck Witch"
+                            }
+                            else if (player.mordred) {
+                                status = "You are the rubber ducky!"
+                            }
+                            else if (player.percival) {
+                                status = "You are the duck knight!"
+                            } else {
+                                status = "You are a normal duck citizen!"
+                            }
                         }
-                        else if(player.morgana) {
-                            status = "You are the Duck Witch"
-                        }
-                        else if(player.mordred) {
-                            status = "You are the rubber ducky!"
-                        }
-                        else if(player.percival) {
-                            status = "You are the duck knight!"
-                        } else {
-                            status = "You are a normal duck citizen!"
-                        }
-                    }
 
-                    if (player.bad) {
-                        if (user.bad || (!player.mordred && user.merlin)) {
-                            status += "BAD Gooose - Tis a duck!!"
+                        if (player.bad) {
+                            if (user.bad || (!player.mordred && user.merlin)) {
+                                status += "BAD Gooose - Tis a duck!!"
+                            }
                         }
-                    }
 
-                    if((player.merlin || player.morgana) && user.percival) {
-                        status += "Goose wizard or Duck Witch!"
-                    }
+                        if ((player.merlin || player.morgana) && user.percival) {
+                            status += "Goose wizard or Duck Witch!"
+                        }
 
-                    status += " NORMAL!"
+                        status += " NORMAL!"
 
-                    return <Player key={i} player={player} status={status} />
-                })}
-        </div> :
+                        return <Player key={i} player={player} status={status} />
+                    })}
+            </CardGroup> :
             <>loading...</>
     )
 }
