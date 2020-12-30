@@ -1,18 +1,16 @@
 import React from 'react'
-import { Card, CardGroup } from 'react-bootstrap';
+import { Card, CardDeck } from 'react-bootstrap';
 
 // single player
 interface PropsPlayer {
     player: any | undefined,
-    status: String
-    // photoURL: String,
-    // username: String,
-    // status: String // this will give a status to a specific player depending on the current user
+    status: String,
+    missionMaker: Boolean 
 }
 
 const Player = (props: PropsPlayer) => {
 
-    const { player, status } = props;
+    const { player, status, missionMaker } = props;
 
     // TODO: determine the different uses of status, ie bad makes it red or smth
     // TODO: making this work
@@ -20,7 +18,8 @@ const Player = (props: PropsPlayer) => {
     const mapPlayerToTsx = (player: any) => {
         const { photoURL, username } = player;
         return (
-            <Card>
+            <Card border="secondary" bg={missionMaker ? "primary": "secondary"}>
+                {missionMaker && <Card.Header>Mission Maker</Card.Header>}
                 <Card.Img variant="top" src={photoURL} alt="Profile" />
                 <Card.Body>
                     <Card.Title>{username}</Card.Title>
@@ -42,16 +41,17 @@ const Player = (props: PropsPlayer) => {
 interface PropsPlayers {
     players: Array<any> | undefined,
     loading: Boolean,
-    user: any
+    user: any,
+    missionMaker: any // the mission maker's id
 }
 
 export const Players = (props: PropsPlayers) => {
-    const { players, loading, user } = props;
-    console.log(user)
+    const { players, loading, user, missionMaker } = props;
+    console.log(missionMaker)
 
     return (
         !loading ?
-            <CardGroup>
+            <CardDeck>
                 {players &&
                     players.map((player, i) => {
                         let status = ""
@@ -85,9 +85,9 @@ export const Players = (props: PropsPlayers) => {
 
                         status += " NORMAL!"
 
-                        return <Player key={i} player={player} status={status} />
+                        return <Player key={i} player={player} status={status} missionMaker={player.uid === missionMaker}/>
                     })}
-            </CardGroup> :
+            </CardDeck> :
             <>loading...</>
     )
 }

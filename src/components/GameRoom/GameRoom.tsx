@@ -25,20 +25,20 @@ const deleteGameFetch = async (uid: String, gameId: String) => {
 
 const Owner = (props: OwnerProps) => {
 
-    const {user, gameId} = props;
+    const { user, gameId } = props;
 
     const [error, setError] = useState("")
 
     const deleteGame = async () => {
         const response = await deleteGameFetch(user.uid, gameId)
-        if (typeof response === 'string'){
+        if (typeof response === 'string') {
             setError(response)
         }
     }
 
     const startGame = async () => {
         console.log("start game")
-        const data = {gameId, uid: user.uid}
+        const data = { gameId, uid: user.uid }
         const response = await createPostRequest(data, "/startGame")
 
         if (typeof response === 'string') {
@@ -50,7 +50,7 @@ const Owner = (props: OwnerProps) => {
         <>
             {error &&
                 <Alert variant="danger">
-                    <Alert.Heading>An error occured while trying to start the game!</Alert.Heading>    
+                    <Alert.Heading>An error occured while trying to start the game!</Alert.Heading>
                     <p>{error}</p>
                 </Alert>}
             <Button variant="danger" onClick={deleteGame}>Delete Game</Button>
@@ -96,6 +96,7 @@ export const GameRoom = (props: Props) => {
     const [owner, setOwner] = useState(false)
     const [notMember, setNotMember] = useState(false)
     const [userInfo, setUserInfo] = useState({})
+    const [missionMaker, setMissionMaker] = useState("") // we need to get the mission maker as well
 
     useEffect(() => {
 
@@ -105,6 +106,7 @@ export const GameRoom = (props: Props) => {
             setNotMember(!!notMember)
             setOwner(!!isOwner)
             setUserInfo(getUserInfo)
+            setMissionMaker(gameData.playersList[gameData.missionMaker])
         }
 
     }, [loading, playersLoading]) // should only try again after the players change
@@ -117,17 +119,17 @@ export const GameRoom = (props: Props) => {
     }
 
     return (
-        !loading ?
+        !loading && !playersLoading ?
             <div>
                 The Room Code is: {gameId}
                 <br />
                 Turn: {gameData.turn}
                 <hr />
-                <Players players={players} loading={playersLoading} user={userInfo} />
+                <Players players={players} loading={playersLoading} user={userInfo} missionMaker={missionMaker} />
                 <hr />
                 {gameData.turn === 0 ?
                     <p>Game has not started yet!</p>
-                    : <Mission success={gameData.success} turn={gameData.turn} fail={gameData.fail} rejections={gameData.rejected}/>
+                    : <Mission gameId={gameId} players={players} uid={user.uid} missionMaker={missionMaker} success={gameData.success} turn={gameData.turn} fail={gameData.fail} rejections={gameData.rejected} />
                 }
                 <hr />
                 {gameData.turn === 60 &&
@@ -135,7 +137,7 @@ export const GameRoom = (props: Props) => {
                     gameData.winner
                 }
                 <hr />
-                {owner && <Owner gameId={gameId} user={userInfo}/>}
+                {owner && <Owner gameId={gameId} user={userInfo} />}
                 <Button variant="outline-info" href="/">Home</Button>
             </div>
             : <>loading...</>
