@@ -1,10 +1,11 @@
 // TODO: make this work with firebase for v2
 import React, { useEffect, useState } from 'react'
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
-import { firestore, firebase } from '../../firebase-init';
+import { firebase } from '../../firebase-init';
 
 interface Props {
   style: { [key: string]: any } | undefined,
+  messagesRef: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>,
   messages: Array<any> | undefined,
   loading: Boolean,
   players: Array<any> | undefined,
@@ -13,7 +14,7 @@ interface Props {
 
 export const Chatbar = (props: Props) => {
 
-  const { style, messages, loading, players, user } = props;
+  const { style, messagesRef, messages, loading, players, user } = props;
 
   const [ playersById, setPlayersById ] = useState<any>(undefined);
   const [ formattedMessages, setFormattedMessages ] = useState<any>(undefined);
@@ -70,7 +71,7 @@ export const Chatbar = (props: Props) => {
 
   const sendMessage = async () => {
 
-    await firestore.collection('messages').doc().set({
+    await messagesRef.add({
       uid: user.uid,
       text: typedMessage,
       time: firebase.firestore.Timestamp.now()

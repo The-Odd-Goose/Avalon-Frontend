@@ -134,6 +134,7 @@ export const GameRoom = (props: Props) => {
 
                 <Chatbar
                   style={{ border: '4px solid #ff0000' }}
+                  messagesRef={messagesRef}
                   messages={messages}
                   players={players}
                   loading={messagesLoading || playersLoading}
