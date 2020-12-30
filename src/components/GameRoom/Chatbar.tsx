@@ -72,12 +72,13 @@ export const Chatbar = (props: Props) => {
 
   // adds the message
   const sendMessage: () => void = async () => {
-    const { uid, photoURL } = user;
+    const { uid, photoURL, username } = user;
     await messagesRef.add({
       uid,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       photoURL,
-      text: "Here we'll pass in the value"
+      text: "Here we'll pass in the value",
+      username
     })
   }
 

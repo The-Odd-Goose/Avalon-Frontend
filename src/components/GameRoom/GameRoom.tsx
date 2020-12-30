@@ -138,7 +138,7 @@ export const GameRoom = (props: Props) => {
                   players={players}
                   loading={messagesLoading || playersLoading}
                   messagesRef={messagesRef}
-                  user={user}
+                  user={userInfo}
                 />
             </div>
             : <>loading...</>
