@@ -132,7 +132,7 @@ export const GameRoom = (props: Props) => {
                 {userInfo && JSON.stringify(userInfo)}
                 <Button variant="outline-info" href="/">Home</Button>
 
-                <Chatbar messages={messages} loading={messagesLoading} players={players} />
+                <Chatbar messages={messages} players={players} loading={messagesLoading || playersLoading} user={userInfo} />
             </div>
             : <>loading...</>
     )
