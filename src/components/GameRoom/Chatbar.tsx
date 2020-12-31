@@ -1,5 +1,5 @@
 // TODO: make this work with firebase for v2
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
 import { firebase } from '../../firebase-init';
 
@@ -15,6 +15,8 @@ interface Props {
 export const Chatbar = (props: Props) => {
 
   const { style, messagesRef, messages, loading, players, user } = props;
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [ playersById, setPlayersById ] = useState<any>(undefined);
   const [ formattedMessages, setFormattedMessages ] = useState<any>(undefined);
@@ -71,15 +73,31 @@ export const Chatbar = (props: Props) => {
 
   const sendMessage = async () => {
 
+    if (!typedMessage) {
+      return;
+    }
+
     await messagesRef.add({
       uid: user.uid,
       text: typedMessage,
       time: firebase.firestore.Timestamp.now()
     });
+
+    if (inputRef && inputRef.current) {
+      inputRef.current.value = '';
+      setTypedMessage('');
+    }
   }
 
-  const onTypedMessageChange = (event : { [key: string]: any }) => {
+  const onTypedMessageChange = (event: { [key: string]: any }) => {
     setTypedMessage(event.target.value);
+  }
+
+  const onTypedMessageKeyDown = (event: { [key: string]: any }) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      sendMessage();
+    }
   }
 
   if (loading) {
@@ -94,10 +112,12 @@ export const Chatbar = (props: Props) => {
       {/* Send message form */}
       <InputGroup>
         <FormControl
-          placeholder="Enter message"
-          aria-label="Enter message"
+          ref={inputRef}
+          placeholder="Message"
+          aria-label="Message"
           aria-describedby="basic-addon2"
           onChange={onTypedMessageChange}
+          onKeyDown={onTypedMessageKeyDown}
         />
         <InputGroup.Append>
           <Button variant="outline-secondary" onClick={sendMessage}>Send</Button>
