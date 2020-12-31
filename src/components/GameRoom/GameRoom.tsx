@@ -7,6 +7,7 @@ import { Players } from './Players';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Alert, Button } from 'react-bootstrap';
 import { createPostRequest, createDeleteRequest } from '../fetch';
+import { Chatbar } from "./Chatbar";
 
 interface Props {
 
@@ -100,6 +101,10 @@ export const GameRoom = (props: Props) => {
     const playersRef = gamesRef.collection("players")
     const [players, playersLoading] = useCollectionData(playersRef, { idField: "id" });
 
+    const messagesRef = gamesRef.collection("messages")
+    const query = messagesRef.orderBy("createdAt").limit(25)
+    const [messages, messagesLoading] = useCollectionData(query, { idField: "id" });
+
     const [owner, setOwner] = useState(false)
     const [notMember, setNotMember] = useState(false)
     const [userInfo, setUserInfo] = useState({})
@@ -157,6 +162,15 @@ export const GameRoom = (props: Props) => {
                 <hr />
                 {owner && <Owner gameId={gameId} user={userInfo} />}
                 <Button variant="outline-info" href="/">Home</Button>
+
+                <Chatbar
+                  style={{ border: '4px solid #ff0000' }}
+                  messagesRef={messagesRef}
+                  messages={messages}
+                  playersDict={playersDict}
+                  loading={messagesLoading || playersLoading}
+                  user={userInfo}
+                />
             </div>
             : <>loading...</>
     )
