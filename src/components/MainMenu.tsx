@@ -23,14 +23,14 @@ function SignIn() {
 
     return (
         <body>
-            <form id="frm1">
+            <div id="frm1">
                 <div className="container">
                     <h1 style={{ "textAlign": "center" }}>The Odd Goose
                     <img src="goose.gif" alt="Goose" width="180" height="120" />
                     </h1>
                     <button onClick={signInWithGoogle}>Sign In With Google</button>
                 </div>
-            </form>
+            </div>
         </body>
     )
 
