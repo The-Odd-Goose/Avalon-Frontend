@@ -32,6 +32,7 @@ const ChooseMission = (props: ChooseProps) => {
     const [remaining, setRemaining] = useState(0)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [message, setMessage] = useState("")
 
     useEffect(() => {
         if (players) {
@@ -82,6 +83,8 @@ const ChooseMission = (props: ChooseProps) => {
 
         if (typeof response === 'string') {
             setError(response)
+        } else {
+            setMessage(response.message)
         }
 
         setLoading(false)
@@ -91,6 +94,7 @@ const ChooseMission = (props: ChooseProps) => {
         <>
             {loading && <>...loading</>}
             {error && <Alert variant="danger">{error}</Alert>}
+            {message && <Alert variant="success">{message}</Alert>}
             {players?.map((player, i) => {
                 return mapPlayerToMissionChoice(player, i)
             })}
@@ -140,12 +144,16 @@ const Vote = (props: VoteFormProps) => {
     const [error, setError] = useState("")
     const [show, setShow] = useState({ show: false, voteFor: false })
 
+    const [message, setMessage] = useState("")
+
     const voteOnMission = async () => {
         setLoading(true)
         const response = await createPostRequest({ gameId, uid, [voteField]: show.voteFor }, path)
         if (typeof response === 'string') {
             // ie there is an error,
             setError(response)
+        } else {
+            setMessage(response.message)
         }
         setLoading(false)
         setShow({ show: false, voteFor: false })
@@ -160,6 +168,7 @@ const Vote = (props: VoteFormProps) => {
     return (
         <>
             {error && <Alert variant="danger">{error}</Alert>}
+            {message && <Alert variant="success">{error}</Alert>}
             <Button variant="primary" onClick={() => handleClick(true)}>{stringFor}</Button>
             <Button variant="danger" onClick={() => handleClick(false)}>{stringAgainst}</Button>
 
@@ -174,8 +183,8 @@ const Vote = (props: VoteFormProps) => {
                 </Modal.Header>
                 <Modal.Body>{loading ? "...loading" : "Are you sure you want to vote this way?"}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
                     <Button variant="primary" onClick={voteOnMission}>Yes</Button>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
 

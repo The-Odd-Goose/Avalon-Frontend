@@ -20,7 +20,6 @@ interface OwnerProps {
 
 const deleteGameFetch = async (uid: String, gameId: String) => {
     const data = { gameId, uid }
-    console.log("deleted game")
     return await createDeleteRequest(data, '/game')
 }
 
@@ -29,6 +28,7 @@ const Owner = (props: OwnerProps) => {
     const { user, gameId } = props;
 
     const [error, setError] = useState("")
+    const [message, setMessage] = useState("")
 
     const deleteGame = async () => {
         const response = await deleteGameFetch(user.uid, gameId)
@@ -38,12 +38,13 @@ const Owner = (props: OwnerProps) => {
     }
 
     const startGame = async () => {
-        console.log("start game")
         const data = { gameId, uid: user.uid }
         const response = await createPostRequest(data, "/startGame")
 
         if (typeof response === 'string') {
             setError(response)
+        } else {
+            setMessage(response.message)
         }
     }
 
@@ -54,8 +55,10 @@ const Owner = (props: OwnerProps) => {
                     <Alert.Heading>An error occured while trying to start the game!</Alert.Heading>
                     <p>{error}</p>
                 </Alert>}
+            {message &&
+                <Alert variant="success">{message}</Alert>}
             <Button variant="danger" onClick={deleteGame}>Delete Game</Button>
-            <Button variant="primary" onClick={startGame}>(Re)Start Game</Button>
+            <Button variant="primary" onClick={startGame}>Start Game</Button>
         </>
     )
 }
@@ -125,7 +128,7 @@ export const GameRoom = (props: Props) => {
             }
         }
 
-    }, [loading, playersLoading, gameData]) // should only try again after the players change
+    }, [loading, playersLoading, gameData, players]) // should only try again after the players change
 
     // TODO: improve the loading haha
     if (!loading && !playersLoading) {
@@ -141,7 +144,7 @@ export const GameRoom = (props: Props) => {
                 <br />
                 Turn: {gameData.turn}
                 <hr />
-                <Players players={players} loading={playersLoading} user={userInfo} missionMaker={missionMaker} />
+                <Players players={players} loading={playersLoading} user={userInfo} missionMaker={missionMaker} turn={gameData.turn}/>
                 <hr />
                 {gameData.turn === 0 ?
                     <p>Game has not started yet!</p>
