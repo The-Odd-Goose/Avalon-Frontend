@@ -125,7 +125,7 @@ export const GameRoom = (props: Props) => {
             }
         }
 
-    }, [loading, playersLoading, gameData]) // should only try again after the players change
+    }, [loading, playersLoading, gameData, players]) // should only try again after the players change
 
     // TODO: improve the loading haha
     if (!loading && !playersLoading) {
