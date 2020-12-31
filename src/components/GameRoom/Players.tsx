@@ -21,7 +21,7 @@ const Player = (props: PropsPlayer) => {
     const mapPlayerToTsx = (player: any) => {
         const { photoURL, username } = player;
         return (
-            <Card border="secondary" bg={missionMaker ? "primary": (you ? "secondary": "success")}>
+            <Card border="secondary" bg={missionMaker ? "primary": (you ? "success": "secondary")}>
                 {missionMaker && <Card.Header>Mission Maker</Card.Header>}
                 {owner && <Card.Header>Owner</Card.Header>}
                 <Card.Img variant="top" src={photoURL} alt="Profile" />
