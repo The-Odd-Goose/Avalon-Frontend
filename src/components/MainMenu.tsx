@@ -22,14 +22,16 @@ function SignIn() {
     }
 
     return (
-        <form id="frm1" action="demo" method="post">
-            <div className="container">
-                <h1 style={{ "textAlign": "center" }}>The Odd Goose
+        <body>
+            <form id="frm1">
+                <div className="container">
+                    <h1 style={{ "textAlign": "center" }}>The Odd Goose
                     <img src="goose.gif" alt="Goose" width="180" height="120" />
-                </h1>
-                <button type="submit" onClick={signInWithGoogle}>Sign In With Google</button>
-            </div>
-        </form>
+                    </h1>
+                    <button onClick={signInWithGoogle}>Sign In With Google</button>
+                </div>
+            </form>
+        </body>
     )
 
 }
@@ -154,7 +156,7 @@ export const MainMenu = (props: Props) => {
 
     const [user] = useAuthState(auth);
 
-    if(!user) {
+    if (!user) {
         return <SignIn />
     }
 
