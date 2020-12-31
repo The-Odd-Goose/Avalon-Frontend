@@ -95,7 +95,8 @@ export const GameRoom = (props: Props) => {
     const [players, playersLoading] = useCollectionData(playersRef, { idField: "id" });
 
     const messagesRef = gamesRef.collection("messages")
-    const [messages, messagesLoading] = useCollectionData(messagesRef, { idField: "id" });
+    const query = messagesRef.orderBy("createdAt").limit(25)
+    const [messages, messagesLoading] = useCollectionData(query, { idField: "id" });
 
     const [owner, setOwner] = useState(false)
     const [notMember, setNotMember] = useState(false)
@@ -134,10 +135,10 @@ export const GameRoom = (props: Props) => {
 
                 <Chatbar
                   style={{ border: '4px solid #ff0000' }}
+                  messagesRef={messagesRef}
                   messages={messages}
                   players={players}
                   loading={messagesLoading || playersLoading}
-                  messagesRef={messagesRef}
                   user={userInfo}
                 />
             </div>
