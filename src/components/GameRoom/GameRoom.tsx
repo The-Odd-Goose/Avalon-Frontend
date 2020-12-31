@@ -167,7 +167,7 @@ export const GameRoom = (props: Props) => {
                   style={{ border: '4px solid #ff0000' }}
                   messagesRef={messagesRef}
                   messages={messages}
-                  players={players}
+                  playersDict={playersDict}
                   loading={messagesLoading || playersLoading}
                   user={userInfo}
                 />

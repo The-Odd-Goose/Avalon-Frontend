@@ -205,10 +205,12 @@ const VoteMission = (props: VoteProps) => {
             })}
 
             <hr />
-            {vote && "Players left to vote:" &&
-                vote?.map((player, key) => {
+            {vote && 
+                <>Players left to vote:
+                {vote?.map((player, key) => {
                     return displayPlayer(players.get(player), key)
-                })
+                })}
+                </>
             }
             <hr />
             Voted For: {" "}

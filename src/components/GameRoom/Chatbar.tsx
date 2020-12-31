@@ -1,6 +1,6 @@
 // TODO: make this work with firebase for v2
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, InputGroup, FormControl, Image } from 'react-bootstrap';
 import { firebase } from '../../firebase-init';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   messagesRef: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>,
   messages: Array<any> | undefined,
   loading: Boolean,
-  players: Array<any> | undefined,
+  playersDict: Map<String, any>,
   user: any
 }
 
@@ -18,10 +18,9 @@ export const Chatbar = (props: Props) => {
   const messageLimit = 25;
 
   // Extract elements from props.
-  const { style, messagesRef, messages, loading, players, user } = props;
+  const { style, messagesRef, messages, loading, playersDict, user } = props;
 
   // States.
-  const [playersById, setPlayersById] = useState<any>(undefined);
   const [formattedMessages, setFormattedMessages] = useState<any>(undefined);
   const [typedMessage, setTypedMessage] = useState('');
 
@@ -42,15 +41,11 @@ export const Chatbar = (props: Props) => {
   // Set playersById when needed.
   useEffect(() => {
 
-    if (!players) {
+    if (!playersDict) {
       return undefined;
     }
 
-    let temp: { [key: string]: any } = {};
-    players.forEach(p => { temp[p.uid] = p; });
-    setPlayersById(temp);
-
-  }, [players]);
+  }, [playersDict]);
 
   // Set formattedMessages when needed.
   useEffect(() => {
@@ -63,7 +58,7 @@ export const Chatbar = (props: Props) => {
 
     setFormattedMessages(sorted.map((msg, i) => {  // Loop through all messages.
 
-      let player = playersById[msg.uid];
+      let player = playersDict.get(msg.uid);
 
       // Single message element.
       // TODO: Replace with stylesheet.
@@ -72,6 +67,7 @@ export const Chatbar = (props: Props) => {
           key={i}
           style={(player.uid === user.uid) ? ownMessageStyle : otherMessageStyle}
         >
+          <Image roundedCircle src={player.photoURL}/>
           <div>{player.username}:</div>
           <div>{msg.text}</div>
         </div>
@@ -83,7 +79,7 @@ export const Chatbar = (props: Props) => {
 
   // adds the message
   const sendMessage: () => void = async () => {
-    const { uid, photoURL, username } = user;
+    const { uid } = user;
 
     if (!typedMessage) {
       return;
@@ -92,9 +88,7 @@ export const Chatbar = (props: Props) => {
     await messagesRef.add({
       uid,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      photoURL,
-      text: "Here we'll pass in the value",
-      username
+      text: typedMessage,
     })
 
     // Clear input field.
