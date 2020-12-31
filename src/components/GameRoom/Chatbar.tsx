@@ -14,14 +14,22 @@ interface Props {
 
 export const Chatbar = (props: Props) => {
 
+  // The maximum number of messages to display.
+  const messageLimit = 100;
+
+  // Extract elements from props.
   const { style, messagesRef, messages, loading, players, user } = props;
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  // States.
   const [ playersById, setPlayersById ] = useState<any>(undefined);
   const [ formattedMessages, setFormattedMessages ] = useState<any>(undefined);
   const [ typedMessage, setTypedMessage ] = useState('');
 
+  // Ref for input field.
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Message styles.
+  // TODO: Replace with stylesheet.
   const otherMessageStyle = {
     padding: '0.5em',
     textAlign: 'left' as const
@@ -53,16 +61,23 @@ export const Chatbar = (props: Props) => {
 
     const getTime = (sec: number, nsec: number) => (sec * Math.pow(10, 9) + nsec);
     
+    // Sort newest to oldest.
     let sorted = messages.sort((a, b) => (
-      getTime(a.time.seconds, a.time.nanoseconds) - getTime(b.time.seconds, b.time.nanoseconds)
+      getTime(b.time.seconds, b.time.nanoseconds) - getTime(a.time.seconds, a.time.nanoseconds)
     ));
-
-    setFormattedMessages(sorted.map((msg, i) => {
+    // Take the newest messages, reverse to display newest last.
+    sorted = sorted.slice(0, messageLimit).reverse();
+    
+    setFormattedMessages(sorted.map((msg, i) => {  // Loop through all messages.
 
       let player = playersById[msg.uid];
 
+      // Single message element.
       return (
-        <div key={i} style={(player.uid === user.uid) ? ownMessageStyle : otherMessageStyle}>
+        <div
+          key={i}
+          style={(player.uid === user.uid) ? ownMessageStyle : otherMessageStyle} {/* TODO: Replace with stylesheet */}
+        >
           <div>{player.username}:</div>
           <div>{msg.text}</div>
         </div>
@@ -83,6 +98,7 @@ export const Chatbar = (props: Props) => {
       time: firebase.firestore.Timestamp.now()
     });
 
+    // Clear input field.
     if (inputRef && inputRef.current) {
       inputRef.current.value = '';
       setTypedMessage('');
@@ -90,10 +106,12 @@ export const Chatbar = (props: Props) => {
   }
 
   const onTypedMessageChange = (event: { [key: string]: any }) => {
+    // Update the input field in state.
     setTypedMessage(event.target.value);
   }
 
   const onTypedMessageKeyDown = (event: { [key: string]: any }) => {
+    // Pressing 'Enter' in the input field does the same thing as pressing send.
     if (event.key === 'Enter') {
       event.preventDefault();
       sendMessage();
@@ -106,10 +124,11 @@ export const Chatbar = (props: Props) => {
 
   return (
     <div style={{ ...style }}>
-      <div style={{ marginBottom: '0.5em' }}>
+      {/* Messages */}
+      <div style={{ marginBottom: '0.5em' }}> {/* TODO: Replace with stylesheet */}
         {formattedMessages}
       </div>
-      {/* Send message form */}
+      {/* Send message input field and button */}
       <InputGroup>
         <FormControl
           ref={inputRef}
