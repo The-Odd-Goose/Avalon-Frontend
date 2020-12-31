@@ -8,6 +8,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { Redirect } from 'react-router';
 
 import { createPostRequest } from './fetch'
+import "../assets/sign-in.css"
 
 interface Props {
 }
@@ -21,7 +22,14 @@ function SignIn() {
     }
 
     return (
-        <button onClick={signInWithGoogle}>Sign in with Google</button>
+        <div id="frm1">
+            <div className="container">
+                <h1 style={{ "textAlign": "center" }}>The Odd Goose
+                        <img src="goose.gif" alt="Goose" width="180" height="120" />
+                </h1>
+                <button onClick={signInWithGoogle}>Sign In With Google</button>
+            </div>
+        </div>
     )
 
 }
@@ -109,35 +117,35 @@ function JoinGame() {
 
     return (
         loading ? <>loading...</> :
-        <div>
-            {error && 
-                <Alert variant="danger">
-                    <Alert.Heading>An error has occured!</Alert.Heading>
-                    <p>{error}</p>
-                </Alert>
-            }
+            <div>
+                {error &&
+                    <Alert variant="danger">
+                        <Alert.Heading>An error has occured!</Alert.Heading>
+                        <p>{error}</p>
+                    </Alert>
+                }
 
-            <Form onSubmit={joinGameRoom}>
+                <Form onSubmit={joinGameRoom}>
 
-                <Form.Group>
-                    <Form.Label>Game Room Code:</Form.Label>
-                    <Form.Control type="text" onChange={(e) => setRoomCode(e.target.value)} />
+                    <Form.Group>
+                        <Form.Label>Game Room Code:</Form.Label>
+                        <Form.Control type="text" onChange={(e) => setRoomCode(e.target.value)} />
 
-                    <Form.Label>Nickname:</Form.Label>
-                    <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
+                        <Form.Label>Nickname:</Form.Label>
+                        <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
 
-                    {/* For hosting your own game */}
-                    <Form.Label>Or create your own game:</Form.Label>
-                    <Button variant="secondary" onClick={createGameRoom}>Host</Button>
+                        {/* For hosting your own game */}
+                        <Form.Label>Or create your own game:</Form.Label>
+                        <Button variant="secondary" onClick={createGameRoom}>Host</Button>
 
-                </Form.Group>
+                    </Form.Group>
 
-                <Button variant="primary" type="submit">Join</Button>
+                    <Button variant="primary" type="submit">Join</Button>
 
-            </Form>
+                </Form>
 
 
-        </div>
+            </div>
     )
 
 }
@@ -145,6 +153,10 @@ function JoinGame() {
 export const MainMenu = (props: Props) => {
 
     const [user] = useAuthState(auth);
+
+    if (!user) {
+        return <SignIn />
+    }
 
     return (
         <>
