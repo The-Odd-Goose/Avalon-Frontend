@@ -59,15 +59,22 @@ const Owner = (props: OwnerProps) => {
     )
 }
 
-const loopPlayers = (players: Array<any> | undefined, user: any): [Boolean, Boolean, Object] => {
+const loopPlayers = (players: Array<any> | undefined, user: any): [Boolean, Boolean, Object, Map<String, any>] => {
     if (!players) {
-        return [false, false, {}];
+        return [false, false, {}, new Map()];
     }
 
     let doesNotBelong = true;
     let isOwner = false;
     let userInfo = {};
+
+    let playersDict = new Map()
+
     for (const player of players) {
+        let uid = player.uid
+        if (typeof uid === 'string') {
+            playersDict.set(uid, player)
+        }
         if (player.uid === user.uid) {
             doesNotBelong = false;
             isOwner = player.owner || isOwner;
@@ -75,7 +82,7 @@ const loopPlayers = (players: Array<any> | undefined, user: any): [Boolean, Bool
         }
     }
 
-    return [doesNotBelong, isOwner, userInfo]
+    return [doesNotBelong, isOwner, userInfo, playersDict]
 
 }
 
@@ -98,18 +105,22 @@ export const GameRoom = (props: Props) => {
     const [userInfo, setUserInfo] = useState({})
     const [missionMaker, setMissionMaker] = useState("") // we need to get the mission maker as well
 
+    const [playersDict, setPlayersDict] = useState(new Map())
+
     useEffect(() => {
 
         if (!loading && !playersLoading && user && gameData !== undefined) {
-            console.log("calling...")
-            const [notMember, isOwner, getUserInfo] = loopPlayers(players, user)
+            const [notMember, isOwner, getUserInfo, getPlayersDict] = loopPlayers(players, user)
             setNotMember(!!notMember)
             setOwner(!!isOwner)
             setUserInfo(getUserInfo)
-            setMissionMaker(gameData.playersList[gameData.missionMaker])
+            setPlayersDict(getPlayersDict)
+            if (gameData.turn !== 0) {
+                setMissionMaker(gameData.playersList[gameData.missionMaker])
+            }
         }
 
-    }, [loading, playersLoading]) // should only try again after the players change
+    }, [loading, playersLoading, gameData]) // should only try again after the players change
 
     // TODO: improve the loading haha
     if (!loading && !playersLoading) {
@@ -129,7 +140,14 @@ export const GameRoom = (props: Props) => {
                 <hr />
                 {gameData.turn === 0 ?
                     <p>Game has not started yet!</p>
-                    : <Mission gameId={gameId} players={players} uid={user.uid} missionMaker={missionMaker} success={gameData.success} turn={gameData.turn} fail={gameData.fail} rejections={gameData.rejected} />
+                    : <Mission
+                        gameData={gameData}
+                        gameId={gameId}
+                        players={players}
+                        uid={user.uid}
+                        missionMaker={missionMaker}
+                        playersDict={playersDict}
+                    />
                 }
                 <hr />
                 {gameData.turn === 60 &&

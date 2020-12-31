@@ -3,14 +3,12 @@ import { Spinner, Image, Badge, Button, Alert } from 'react-bootstrap';
 import { createPostRequest } from '../fetch';
 
 interface Props {
-    success: Number,
-    turn: number,
-    fail: Number,
-    rejections: Number,
+    gameData: any,
     missionMaker: string,
     players: Array<any> | undefined,
     uid: string,
-    gameId: string
+    gameId: string,
+    playersDict: Map<String, any>
 }
 
 interface ChooseProps {
@@ -80,9 +78,9 @@ const ChooseMission = (props: ChooseProps) => {
             }
         }
 
-        const response = await createPostRequest({uid, gameId, mission: proposeMission}, "/proposeMission")
+        const response = await createPostRequest({ uid, gameId, mission: proposeMission }, "/proposeMission")
 
-        if(typeof response === 'string') {
+        if (typeof response === 'string') {
             setError(response)
         }
 
@@ -103,6 +101,63 @@ const ChooseMission = (props: ChooseProps) => {
     )
 }
 
+interface VoteProps {
+    voteFor: Array<any>,
+    voteAgainst: Array<any>,
+    mission: Array<string>,
+    vote: Array<string>,
+    uid: string,
+    players: Map<String, any>
+}
+
+const displayPlayer = (player: any, key: number): JSX.Element => {
+    if (player) {
+        const { photoURL, username } = player;
+        return (
+            <span key={key}>
+                <Image src={photoURL} alt="Profile" roundedCircle />
+                {" "} {username} {" "}
+            </span>
+        )
+    }
+    return <></>;
+}
+
+const VoteMission = (props: VoteProps) => {
+
+    const { voteFor, voteAgainst, mission, vote, players, uid } = props;
+
+    const canVote = vote.reduce((prev, current) => {
+        return prev || uid === current
+    }, false)
+
+    console.log(canVote)
+
+    return (
+        <>
+            Players on Mission: {" "}
+            {mission?.map((player, key) => {
+                return displayPlayer(players.get(player), key)
+            })}
+
+            <hr />
+            Voted For: {" "}
+            {voteFor?.map((player, key) => {
+                return displayPlayer(players.get(player), key)
+            })}
+
+            <hr />
+            Voted Against: {" "}
+            {voteAgainst?.map((player, key) => {
+                return displayPlayer(players.get(player), key)
+            })}
+
+            <hr />
+            
+        </>
+    )
+}
+
 const getJsxArray = (num: Number, upperNum: number, jsxTrue: (key: number) => JSX.Element, jsxFalse: (key: number) => JSX.Element): Array<JSX.Element> => {
     const jsxArray: Array<JSX.Element> = []
 
@@ -119,7 +174,8 @@ const getJsxArray = (num: Number, upperNum: number, jsxTrue: (key: number) => JS
 
 export const Mission = (props: Props) => {
 
-    const { success, turn, fail, rejections, missionMaker, players, uid, gameId } = props;
+    const { gameData, missionMaker, players, uid, gameId, playersDict } = props;
+    const { success, turn, fail, rejected: rejections, voteFor, voteAgainst, vote, mission } = gameData
 
     // turns the number of successes into an array of jsx elements
     // 3 - that number gets turned into a different type
@@ -137,10 +193,16 @@ export const Mission = (props: Props) => {
 
             <hr />
 
-            Possible Mission People:
             {(turn % 10 === 0) && missionMaker === uid && // if the turn is x1 and we are the mission maker, show choosing mission
-                <ChooseMission players={players} turn={turn} uid={missionMaker} gameId={gameId} />
+                <>Possible Mission People:
+                    <ChooseMission players={players} turn={turn} uid={missionMaker} gameId={gameId} />
+                </>
             }
+
+            {(turn % 10 === 1) &&
+                <VoteMission uid={uid} voteFor={voteFor} voteAgainst={voteAgainst} vote={vote} mission={mission} players={playersDict} />
+            }
+
         </div>
     )
 }

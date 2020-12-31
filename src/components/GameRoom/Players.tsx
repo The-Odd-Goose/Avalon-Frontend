@@ -47,7 +47,6 @@ interface PropsPlayers {
 
 export const Players = (props: PropsPlayers) => {
     const { players, loading, user, missionMaker } = props;
-    console.log(missionMaker)
 
     return (
         !loading ?
