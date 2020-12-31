@@ -73,10 +73,11 @@ export const Chatbar = (props: Props) => {
       let player = playersById[msg.uid];
 
       // Single message element.
+      // TODO: Replace with stylesheet.
       return (
         <div
           key={i}
-          style={(player.uid === user.uid) ? ownMessageStyle : otherMessageStyle} {/* TODO: Replace with stylesheet */}
+          style={(player.uid === user.uid) ? ownMessageStyle : otherMessageStyle}
         >
           <div>{player.username}:</div>
           <div>{msg.text}</div>
