@@ -4,6 +4,7 @@ import { MainMenu } from './components/MainMenu';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { GameRoom } from './components/GameRoom/GameRoom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { About } from './components/About';
 
 function App() {
   return (
@@ -14,6 +15,10 @@ function App() {
 
           <Route path="/games/:gameId">
             <GameRoom />
+          </Route>
+
+          <Route path="/about">
+            <About />
           </Route>
 
           {/* just the regular path, go to main menu */}

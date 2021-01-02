@@ -141,6 +141,7 @@ export const GameRoom = (props: Props) => {
     return (
         !loading && !playersLoading ?
             <div>
+                <Button variant="link" href="/about">Rules and About!</Button>
                 The Room Code is: {gameId}
                 <br />
                 Turn: {gameData.turn}
