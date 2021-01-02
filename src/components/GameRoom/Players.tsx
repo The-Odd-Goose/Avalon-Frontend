@@ -80,7 +80,7 @@ export const Players = (props: PropsPlayers) => {
                         }
 
                         if (player.bad) {
-                            if (user.bad || (!player.mordred && user.merlin) || turn >= 60) {
+                            if (user.bad || (!player.mordred && user.merlin) || turn >= 59) {
                                 bad = true
                             }
                         }

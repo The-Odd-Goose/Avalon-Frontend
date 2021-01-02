@@ -215,11 +215,11 @@ const VoteMission = (props: VoteProps) => {
             })}
 
             <hr />
-            {vote && 
+            {vote &&
                 <>Players left to vote:
-                {vote?.map((player, key) => {
-                    return displayPlayer(players.get(player), key)
-                })}
+                    {vote?.map((player, key) => {
+                        return displayPlayer(players.get(player), key)
+                    })}
                 </>
             }
             <hr />
@@ -296,11 +296,66 @@ interface MissionChoicesProps {
 }
 
 const MissionChoices = (props: MissionChoicesProps) => {
-    const {successMission, failMission} = props;
+    const { successMission, failMission } = props;
 
     return (
         <>Votes for success: {successMission} {" "} Votes for fail: {failMission}</>
     )
+}
+
+interface GuessMerlinProps {
+    gameId: string,
+    uid: string,
+    players: Array<any> | undefined
+}
+
+const GuessMerlin = (props: GuessMerlinProps) => {
+    const { gameId, players, uid } = props;
+
+    const [merlinUid, setMerlinUid] = useState(0)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
+    const [message, setMessage] = useState("")
+
+    const guessMerlinFetch = async () => {
+        setLoading(true)
+        if (players) {
+            const response = await createPostRequest({ gameId, uid, merlinUid: players[merlinUid].uid }, "/guessMerlin")
+            if (typeof response === 'string') {
+                // ie an error has occured
+                setError(response)
+            } else {
+                setMessage(response.message)
+            }
+            setLoading(false)
+        }
+    }
+
+    const mapPlayerToMerlinTsx = (player: any, key: number) => {
+
+        const { photoURL, username } = player;
+
+        return (
+            <span key={key}>
+                <Image src={photoURL} alt="Profile" roundedCircle onClick={(e) => setMerlinUid(key)} />
+                {" "} {username} {" "}
+                {key === merlinUid && <Badge variant="success">Merlin Guess</Badge>}
+            </span>
+        )
+    }
+
+
+    return (
+        loading ? <Loading /> :
+            <>
+                {error && <Alert variant="error">{error}</Alert>}
+                {message && <Alert variant="success">{message}</Alert>}
+                {players?.map(mapPlayerToMerlinTsx)}
+                <Button variant="success" onClick={guessMerlinFetch}>Submit Guess</Button>
+            </>
+    )
+
+
 }
 
 export const Mission = (props: Props) => {
@@ -327,8 +382,8 @@ export const Mission = (props: Props) => {
             {(turn % 10 === 0) && (turn < 60) &&
 
                 <>
-                    {turn >= 20 && 
-                        <MissionChoices successMission={successMission} failMission={failMission}/>
+                    {turn >= 20 &&
+                        <MissionChoices successMission={successMission} failMission={failMission} />
                     }
                     {missionMaker === uid && // if the turn is x1 and we are the mission maker, show choosing mission
                         <>
@@ -345,6 +400,10 @@ export const Mission = (props: Props) => {
 
             {(turn % 10 === 5) &&
                 <DecideMission gameId={gameId} uid={uid} mission={mission} />
+            }
+
+            {turn === 59 && playersDict.get(uid)?.morgana &&
+                <GuessMerlin gameId={gameId} uid={uid} players={players} />
             }
 
         </div>
