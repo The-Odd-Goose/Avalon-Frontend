@@ -12,9 +12,7 @@
     "rewrites": [
       {
         "source": "**",
-        "run": {
-          "serviceId": "backend"
-        }
+        "destination": "/index.html"
       }
     ]
   }
