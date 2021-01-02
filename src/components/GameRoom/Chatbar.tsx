@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, InputGroup, FormControl, Image } from 'react-bootstrap';
 import { firebase } from '../../firebase-init';
+import { Loading } from '../Loading';
 
 interface Props {
   style: { [key: string]: any } | undefined,
@@ -113,7 +114,7 @@ export const Chatbar = (props: Props) => {
   }
 
   if (loading) {
-    return <>loading...</>;
+    return <Loading />;
   }
 
   return (

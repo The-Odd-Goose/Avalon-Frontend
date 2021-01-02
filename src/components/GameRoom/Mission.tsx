@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Spinner, Image, Badge, Button, Alert, Modal } from 'react-bootstrap';
 import { createPostRequest } from '../fetch';
+import { Loading } from '../Loading';
 
 interface Props {
     gameData: any,
@@ -92,7 +93,7 @@ const ChooseMission = (props: ChooseProps) => {
 
     return (
         <>
-            {loading && <>...loading</>}
+            {loading && <Loading />}
             {error && <Alert variant="danger">{error}</Alert>}
             {message && <Alert variant="success">{message}</Alert>}
             {players?.map((player, i) => {
@@ -181,7 +182,7 @@ const Vote = (props: VoteFormProps) => {
                 <Modal.Header closeButton>
                     <Modal.Title>{show.voteFor ? stringFor : stringAgainst}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{loading ? "...loading" : "Are you sure you want to vote this way?"}</Modal.Body>
+                <Modal.Body>{loading ? <Loading /> : "Are you sure you want to vote this way?"}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={voteOnMission}>Yes</Button>
                     <Button variant="secondary" onClick={handleClose}>Cancel</Button>

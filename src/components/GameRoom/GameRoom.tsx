@@ -8,6 +8,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { Alert, Button } from 'react-bootstrap';
 import { createPostRequest, createDeleteRequest } from '../fetch';
 import { Chatbar } from "./Chatbar";
+import { Loading } from '../Loading';
 
 interface Props {
 
@@ -175,7 +176,7 @@ export const GameRoom = (props: Props) => {
                   user={userInfo}
                 />
             </div>
-            : <>loading...</>
+            : <Loading />
     )
 }
 

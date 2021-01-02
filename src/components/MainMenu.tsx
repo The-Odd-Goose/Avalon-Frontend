@@ -9,6 +9,7 @@ import { Redirect } from 'react-router';
 
 import { createPostRequest } from './fetch'
 import "../assets/sign-in.css"
+import { Loading } from './Loading';
 
 interface Props {
 }
@@ -69,6 +70,12 @@ function JoinGame() {
         // here we'll add the user id to the specific game room
         e.preventDefault();
 
+        if(!roomCode) {
+            setError("Room code cannot be empty!")
+            setLoading(false)
+            return;
+        }
+
         // as long as the current user exists, then print out the uid and photoURL
         if (auth.currentUser != null) {
             const { uid } = auth.currentUser;
@@ -116,7 +123,7 @@ function JoinGame() {
     }
 
     return (
-        loading ? <>loading...</> :
+        loading ? <Loading />:
             <div>
                 {error &&
                     <Alert variant="danger">
