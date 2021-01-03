@@ -5,7 +5,8 @@ const createFetchRequest = async (data: Object, method: string, endpoint:string)
 
         var raw = JSON.stringify(data);
 
-        const json = await fetch(`${endpoint}`, {
+        const backendURL = "https://backend-26kgkl3loq-uc.a.run.app"
+        const json = await fetch(`${backendURL}${endpoint}`, {
             method: method,
             headers: myHeaders,
             body: raw,
