@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, CardDeck } from 'react-bootstrap';
+import { Loading } from '../Loading';
 
 // single player
 interface PropsPlayer {
@@ -79,7 +80,7 @@ export const Players = (props: PropsPlayers) => {
                         }
 
                         if (player.bad) {
-                            if (user.bad || (!player.mordred && user.merlin) || turn >= 60) {
+                            if (user.bad || (!player.mordred && user.merlin) || turn >= 59) {
                                 bad = true
                             }
                         }
@@ -91,6 +92,6 @@ export const Players = (props: PropsPlayers) => {
                         return <Player key={i} bad={bad} you={player.uid === user.uid} player={player} status={status} missionMaker={player.uid === missionMaker} owner={player.owner}/>
                     })}
             </CardDeck> :
-            <>loading...</>
+            <Loading />
     )
 }

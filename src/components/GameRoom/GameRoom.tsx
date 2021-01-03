@@ -8,14 +8,15 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { Alert, Button } from 'react-bootstrap';
 import { createPostRequest, createDeleteRequest } from '../fetch';
 import { Chatbar } from "./Chatbar";
+import { Loading } from '../Loading';
 
 interface Props {
-
 }
 
 interface OwnerProps {
     gameId: String,
-    user: any
+    user: any,
+    turn: number
 }
 
 const deleteGameFetch = async (uid: String, gameId: String) => {
@@ -25,7 +26,7 @@ const deleteGameFetch = async (uid: String, gameId: String) => {
 
 const Owner = (props: OwnerProps) => {
 
-    const { user, gameId } = props;
+    const { user, gameId, turn } = props;
 
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
@@ -37,9 +38,9 @@ const Owner = (props: OwnerProps) => {
         }
     }
 
-    const startGame = async () => {
+    const startGame = async (endpoint: string) => {
         const data = { gameId, uid: user.uid }
-        const response = await createPostRequest(data, "/startGame")
+        const response = await createPostRequest(data, endpoint)
 
         if (typeof response === 'string') {
             setError(response)
@@ -58,7 +59,8 @@ const Owner = (props: OwnerProps) => {
             {message &&
                 <Alert variant="success">{message}</Alert>}
             <Button variant="danger" onClick={deleteGame}>Delete Game</Button>
-            <Button variant="primary" onClick={startGame}>Start Game</Button>
+            {turn === 0 ? <Button variant="primary" onClick={() => startGame("/startGame")}>Start Game</Button>
+                : (turn === 60 && <Button variant="primary" onClick={() => startGame("/restartGame")}>Restart Game</Button>)}
         </>
     )
 }
@@ -140,6 +142,7 @@ export const GameRoom = (props: Props) => {
     return (
         !loading && !playersLoading ?
             <div>
+                <Button variant="link" href="/about">Rules and About!</Button>
                 The Room Code is: {gameId}
                 <br />
                 Turn: {gameData.turn}
@@ -163,7 +166,7 @@ export const GameRoom = (props: Props) => {
                     gameData.winner
                 }
                 <hr />
-                {owner && <Owner gameId={gameId} user={userInfo} />}
+                {owner && <Owner gameId={gameId} user={userInfo} turn={gameData.turn}/>}
                 <Button variant="outline-info" href="/">Home</Button>
 
                 <Chatbar
@@ -175,7 +178,7 @@ export const GameRoom = (props: Props) => {
                   user={userInfo}
                 />
             </div>
-            : <>loading...</>
+            : <Loading />
     )
 }
 
