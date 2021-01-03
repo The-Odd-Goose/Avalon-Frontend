@@ -12,10 +12,7 @@
     "rewrites": [
       {
         "source": "**",
-        "run": {
-          "serviceId": "backend",
-          "region": "us-central1"
-        }
+        "destination": "/index.html"
       }
     ]
   }
